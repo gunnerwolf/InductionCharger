@@ -1,5 +1,7 @@
 package net.shadowfacts.inductioncharger;
 
+import javax.annotation.Nullable;
+
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.energy.IEnergyReceiver;
@@ -19,6 +21,7 @@ import net.shadowfacts.shadowmc.ShadowMC;
 import net.shadowfacts.shadowmc.capability.CapHolder;
 import net.shadowfacts.shadowmc.network.PacketRequestTEUpdate;
 import net.shadowfacts.shadowmc.tileentity.BaseTileEntity;
+import net.shadowfacts.inductioncharger.InductionCharger;
 
 /**
  * @author shadowfacts
@@ -85,8 +88,11 @@ public class TileEntityCharger extends BaseTileEntity implements ITickable, IIte
 		return true;
 	}
 
+	@Nullable
 	private EnumFacing getFacing() {
-		return worldObj.getBlockState(pos).getValue(BlockCharger.FACING);
+		IBlockState state == worldObj.getBlockState(pos);
+		if (state.getBlock() != InductionCharger.charger) return null;
+		return state.getValue(BlockCharger.FACING);
 	}
 
 	@Override
@@ -164,7 +170,8 @@ public class TileEntityCharger extends BaseTileEntity implements ITickable, IIte
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if ((capability == TeslaCapabilities.CAPABILITY_HOLDER || capability == TeslaCapabilities.CAPABILITY_CONSUMER) && facing == getFacing()) {
+		EnumFacing blockFacing = getFacing();
+		if ((capability == TeslaCapabilities.CAPABILITY_HOLDER || capability == TeslaCapabilities.CAPABILITY_CONSUMER) && blockFacing != null && facing == blockFacing {
 			return true;
 		} else {
 			return super.hasCapability(capability, facing);
@@ -173,7 +180,8 @@ public class TileEntityCharger extends BaseTileEntity implements ITickable, IIte
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if ((capability == TeslaCapabilities.CAPABILITY_HOLDER || capability == TeslaCapabilities.CAPABILITY_CONSUMER) && facing == getFacing()) {
+		EnumFacing blockFacing = getFacing();
+		if ((capability == TeslaCapabilities.CAPABILITY_HOLDER || capability == TeslaCapabilities.CAPABILITY_CONSUMER) && blockFacing != null && facing == blockFacing {
 			return (T)tesla;
 		} else {
 			return super.getCapability(capability, facing);
